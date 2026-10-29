@@ -4,6 +4,8 @@ metadata:
   name: {{ .Release.Name }}
   labels:
     app: {{ .Release.Name }}
+  annotations:
+    reloader.stakater.com/auto: "true"
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
@@ -43,13 +45,13 @@ spec:
               cpu: {{ .Values.resources.limits.cpu | quote }}
           livenessProbe:
             httpGet:
-              path: {{ .Values.healthCheckPath }}
+              path: {{ .Values.livenessPath }}
               port: {{ .Values.containerPort }}
             initialDelaySeconds: 10
             periodSeconds: 10
           readinessProbe:
             httpGet:
-              path: {{ .Values.healthCheckPath }}
+              path: {{ .Values.readinessPath }}
               port: {{ .Values.containerPort }}
             initialDelaySeconds: 5
             periodSeconds: 5

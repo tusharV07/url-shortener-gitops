@@ -4,7 +4,11 @@ image:
   tag: ""
   pullPolicy: IfNotPresent
 containerPort: 80
-healthCheckPath: /health
+# Liveness: process-only check, no dependency calls - failing it kills the container.
+livenessPath: /health
+# Readiness: can check dependencies (DB, etc) - failing it just pulls the pod out of
+# the Service's endpoints, no restart.
+readinessPath: /health/ready
 # Secrets to pull from Doppler via the shared ClusterSecretStore, each
 # landing in one container env var. Example:
 # secrets:

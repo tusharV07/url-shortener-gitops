@@ -17,8 +17,6 @@ spec:
           value: v1
         - name: containerPort
           value: "5003"
-        - name: healthCheckPath
-          value: /api/v1/urls/health
       values: |
         secrets:
           - envName: DATABASE_URL

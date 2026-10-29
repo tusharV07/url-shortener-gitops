@@ -10,6 +10,9 @@ spec:
   description: Scopes the url-shortener Applications to this repo, their namespaces, and the cluster-scoped kinds they actually need
   sourceRepos:
     - 'https://github.com/tusharV07/url-shortener-gitops.git'
+    # 3rd-party operator charts, tracked as Applications instead of one-off `helm install`
+    - 'https://charts.external-secrets.io'
+    - 'https://stakater.github.io/stakater-charts'
   destinations:
     - server: 'https://kubernetes.default.svc'
       namespace: infra
@@ -24,6 +27,22 @@ spec:
     # The ClusterSecretStore is cluster-scoped by design
     - group: external-secrets.io
       kind: ClusterSecretStore
+    # Everything below: the external-secrets-operator chart itself (its cluster-scoped
+    # CRDs, RBAC and webhook) and the handful of cluster-scoped custom resources it defines
+    - group: apiextensions.k8s.io
+      kind: CustomResourceDefinition
+    - group: rbac.authorization.k8s.io
+      kind: ClusterRole
+    - group: rbac.authorization.k8s.io
+      kind: ClusterRoleBinding
+    - group: admissionregistration.k8s.io
+      kind: ValidatingWebhookConfiguration
+    - group: external-secrets.io
+      kind: ClusterExternalSecret
+    - group: external-secrets.io
+      kind: ClusterPushSecret
+    - group: generators.external-secrets.io
+      kind: ClusterGenerator
   namespaceResourceWhitelist:
     - group: '*'
       kind: '*'
