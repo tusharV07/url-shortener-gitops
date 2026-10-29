@@ -1,3 +1,15 @@
+# Databases the services actually connect to - migrations only manage tables
+# within a database, not the database itself. Only runs on first initdb
+# (empty PGDATA), same as POSTGRES_USER/POSTGRES_PASSWORD below.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: postgres-init-db
+data:
+  init-databases.sql: |
+    CREATE DATABASE url_urls_db;
+    CREATE DATABASE url_users_db_dev;
+---
 # Pull credentials from Doppler safely
 apiVersion: external-secrets.io/v1
 kind: ExternalSecret
@@ -71,6 +83,8 @@ spec:
           volumeMounts:
             - name: postgres-data
               mountPath: /var/lib/postgresql/data
+            - name: postgres-init-db
+              mountPath: /docker-entrypoint-initdb.d
           resources:
             requests:
               memory: "256Mi"
@@ -78,6 +92,10 @@ spec:
             limits:
               memory: "512Mi"
               cpu: "500m"
+      volumes:
+        - name: postgres-init-db
+          configMap:
+            name: postgres-init-db
   volumeClaimTemplates:
     - metadata:
         name: postgres-data
