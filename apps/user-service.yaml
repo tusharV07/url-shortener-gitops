@@ -4,7 +4,7 @@ metadata:
   name: user-service
   namespace: argocd
 spec:
-  project: default
+  project: url-shortener
   source:
     repoURL: 'https://github.com/tusharV07/url-shortener-gitops.git'
     path: infra/charts/microservice
@@ -17,8 +17,14 @@ spec:
           value: v1
         - name: containerPort
           value: "5001"
-        - name: dopplerSecretKey
-          value: USER_SERVICE_DB_URL
+      values: |
+        secrets:
+          - envName: DATABASE_URL
+            dopplerKey: USER_SERVICE_DB_URL
+        env:
+          KAFKA_BOOTSTRAP_SERVERS: "kafka.infra.svc.cluster.local:9092"
+          KAFKA_TOPIC: "users-events"
+          KAFKA_CLIENT_ID: "user-service"
   destination:
     server: 'https://kubernetes.default.svc'
     namespace: url-shortener

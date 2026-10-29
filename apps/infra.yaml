@@ -4,7 +4,7 @@ metadata:
   name: infra-stack
   namespace: argocd
 spec:
-  project: default
+  project: url-shortener
   source:
     repoURL: 'https://github.com/tusharV07/url-shortener-gitops.git'
     path: infra/stateful

@@ -4,7 +4,19 @@ image:
   tag: ""
   pullPolicy: IfNotPresent
 containerPort: 80
-# The key name in Doppler (e.g., USER_SERVICE_DB_URL)
-dopplerSecretKey: "" 
+healthCheckPath: /health
+# Secrets to pull from Doppler via the shared ClusterSecretStore, each
+# landing in one container env var. Example:
+# secrets:
+#   - envName: DATABASE_URL
+#     dopplerKey: USER_SERVICE_DB_URL
+secrets: []
 # Map for non-sensitive plaintext environment variables
 env: {}
+resources:
+  requests:
+    memory: "128Mi"
+    cpu: "100m"
+  limits:
+    memory: "256Mi"
+    cpu: "250m"

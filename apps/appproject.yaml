@@ -1,0 +1,29 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: url-shortener
+  namespace: argocd
+  annotations:
+    # Must exist before any Application that references this project
+    argocd.argoproj.io/sync-wave: "-2"
+spec:
+  description: Scopes the url-shortener Applications to this repo, their namespaces, and the cluster-scoped kinds they actually need
+  sourceRepos:
+    - 'https://github.com/tusharV07/url-shortener-gitops.git'
+  destinations:
+    - server: 'https://kubernetes.default.svc'
+      namespace: infra
+    - server: 'https://kubernetes.default.svc'
+      namespace: url-shortener
+    - server: 'https://kubernetes.default.svc'
+      namespace: external-secrets
+  clusterResourceWhitelist:
+    # Needed for the CreateNamespace=true sync option
+    - group: ''
+      kind: Namespace
+    # The ClusterSecretStore is cluster-scoped by design
+    - group: external-secrets.io
+      kind: ClusterSecretStore
+  namespaceResourceWhitelist:
+    - group: '*'
+      kind: '*'

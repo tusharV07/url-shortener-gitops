@@ -4,7 +4,7 @@ metadata:
   name: url-generation-service
   namespace: argocd
 spec:
-  project: default
+  project: url-shortener
   source:
     repoURL: 'https://github.com/tusharV07/url-shortener-gitops.git'
     path: infra/charts/microservice
@@ -17,8 +17,26 @@ spec:
           value: v1
         - name: containerPort
           value: "5003"
-        - name: dopplerSecretKey
-          value: URL_GEN_DB_URL
+        - name: healthCheckPath
+          value: /api/v1/urls/health
+      values: |
+        secrets:
+          - envName: DATABASE_URL
+            dopplerKey: URL_GEN_DB_URL
+        env:
+          DATABASE_LOGS: "False"
+          URL_GEN_MAX_RETRIES: "5"
+          NANO_ID_LENGTH: "8"
+          KAFKA_BOOTSTRAP_SERVERS: "kafka.infra.svc.cluster.local:9092"
+          KAFKA_TOPIC: "urls-compact"
+          KAFKA_CLIENT_ID: "url-generation-service"
+          KAFKA_CONSUMER_TOPIC: "users-events"
+          KAFKA_CONSUMER_GROUP_ID: "url-generation-users-events"
+          KAFKA_TOPIC_PARTITIONS: "1"
+          KAFKA_TOPIC_REPLICATION_FACTOR: "1"
+          KAFKA_REQUEST_TIMEOUT: "1000"
+          KAFKA_RETRY_BACKOFF: "300"
+          KAFKA_ACKS: "all"
   destination:
     server: 'https://kubernetes.default.svc'
     namespace: url-shortener
