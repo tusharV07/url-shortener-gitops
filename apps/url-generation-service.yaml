@@ -14,7 +14,7 @@ spec:
         - name: image.repository
           value: tusharvyavahare/url-generation-service
         - name: image.tag
-          value: '221c4f1'
+          value: '8a0fdf3'
         - name: containerPort
           value: "5003"
       values: |
