@@ -14,7 +14,7 @@ spec:
         - name: image.repository
           value: tusharvyavahare/user-service
         - name: image.tag
-          value: v1
+          value: 2518409
         - name: containerPort
           value: "5001"
       values: |
